@@ -1,0 +1,336 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body {
+	background-color: white;
+	text-align: center;
+	margin: 0 auto;
+	max-width: 450px;
+}
+
+header {
+  position: absolute;
+  z-index: 100;
+}
+
+h1 {
+	font-size: 20pt;
+	font-family:  Arial Black;
+	color: red;
+	font-weight: bold;
+	line-height: 50pt;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column; 
+  justify-content: center;
+  width: 100%;
+  min-height: 100%;
+  padding: 20px;
+}
+
+#formContent {
+  max-width: 450px;
+  text-align: center;
+}
+
+#formFooter {
+  border-top: 1px solid #dce8f1;
+  padding: 25px;
+}
+
+/* FORM TYPOGRAPHY*/
+
+input[type=button], input[type=submit], input[type=reset]  {
+  background-color: red;
+  border: none;
+  color: white;
+  padding: 15px 80px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  -webkit-box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  box-shadow: 0 10px 30px 0 rgba(95,186,233,0.4);
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+  margin: 5px 20px 40px 20px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -ms-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover  {
+  background-color: #39ace7;
+}
+
+input[type=button]:active, input[type=submit]:active, input[type=reset]:active  {
+  -moz-transform: scale(0.95);
+  -webkit-transform: scale(0.95);
+  -o-transform: scale(0.95);
+  -ms-transform: scale(0.95);
+  transform: scale(0.95);
+}
+
+input[type=text] {
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 85%;
+  border: 2px solid #f6f6f6;
+  -webkit-transition: all 0.5s ease-in-out;
+  -moz-transition: all 0.5s ease-in-out;
+  -ms-transition: all 0.5s ease-in-out;
+  -o-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+
+input[type=text]:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+
+input[type=text]:placeholder {
+  color: #cccccc;
+}
+
+.form-playerInfo {
+  padding: auto;
+  margin: auto;
+}
+
+.form-sm {
+	width: 50%;
+	display: block;
+    margin : 0 auto;
+}
+
+.form-label-group {
+  margin-bottom: 0.5rem;
+  display: flex;
+}
+
+.form-label-group > input,
+.form-label-group > label {
+  height: 3.125rem;
+  padding: .50rem;
+  white-space: nowrap;
+}
+
+.form-group {
+  margin-bottom: 0.5rem;
+  display: flex;
+}
+
+.form-control{
+	width: 95%;
+}
+
+.stepContainer{
+	text-align:center;
+	margin-top:0.5rem;
+}
+
+.loadPlayersDiv  {
+	flex: 1;
+	padding: auto;
+	margin: auto;
+	max-width:450px
+}
+
+th, td { 
+white-space: nowrap;
+}
+
+.tab {
+  display: none;
+}
+
+.step {
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0.5;
+}
+
+/* Mark the active step: */
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #4CAF50;
+}
+
+
+#numOfPlayers
+{
+	display:inline;	
+}
+
+.field {
+	background-image: url("../img/soccerfieldColor.png");
+	width: 360px;
+	height: 360px;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	margin: 0 auto;
+	z-index: 1;
+}
+
+.grid-container {
+	display: grid;
+	width: 360px;
+	height: 360px;
+	position: relative;
+	z-index: 1;
+}
+.grid-container>div {
+  font-size: calc(80% + 1vw + 1vh);
+}
+
+.goalie {
+	background-color: orange !important;
+	width: 50px;
+	height: 50px;
+}
+
+.fieldPlayer{
+	z-index:3;
+	position: absolute;
+	text-align: center;
+	width: 50px;
+	height: 50px;
+	background-color: gray;
+	touch-action: none;
+	user-select: none;
+}
+
+/*Right & Left*/
+.modal.left .modal-dialog,
+.modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: 300px;
+	height: 75%;
+	-webkit-transform: translate3d(0%, 0, 0);
+		-ms-transform: translate3d(0%, 0, 0);
+		 -o-transform: translate3d(0%, 0, 0);
+			transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content  {
+	overflow-y: auto;
+}
+
+/*Left*/
+.modal.left.fade .modal-dialog{
+	left: 4rem;
+	-webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+		 -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+			transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.modal.left.fade.in .modal-dialog{
+	left: 0;
+}
+
+/*Right*/
+.modal.right.fade .modal-dialog {
+	right: 4rem;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+		 -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+			transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+	right: 0;
+}
+
+#appInterfaceContainer {
+	padding: 0;
+}
+
+#numOfPlayersContainer{
+	display: block;
+	margin: 1rem 0;
+	
+}
+
+#numOfPlayersContainer > label, 
+#numOfPlayersContainer > select {
+    margin: 0;
+	display: inline;
+}
+
+#gameSheetControls{
+	width: 360px;
+	margin: auto;
+}
+
+.navbrand_img{
+  height: 3rem;
+}
+
+.navbar{
+  border: black;
+  border-style: solid;
+  padding: 5px;
+  height: 4rem;
+  align-content: center;
+}
+
+#logoContainer{
+  position: relative;
+  text-align: center;
+  left: 2rem;
+}
+
+.logoCenter{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#logoText{
+	font-size: 1.5rem;
+	font-family:  Arial Black;
+	color: red;
+	font-weight: bold;
+  line-height: 50pt;
+  opacity: 65%;
+}
+
+#rosterButtons{
+  justify-content: space-between;
+}
+
+.sendToLabel, #messageToSend{
+  text-align: left;
+}
+
+.messageCriteria{
+  text-align: center;
+}
