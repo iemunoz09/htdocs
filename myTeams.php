@@ -13,9 +13,9 @@ $auth0 = new Auth0([
 
 $userInfo = $auth0->getUser();
 
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
+// ini_set('display_errors', 1); 
+// ini_set('display_startup_errors', 1); 
+// error_reporting(E_ALL);
 
 if (!$userInfo) {
 

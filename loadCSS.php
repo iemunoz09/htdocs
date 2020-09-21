@@ -7,7 +7,7 @@ if (basename($_SERVER['PHP_SELF']) == 'teamView.php') //* Returns The Current PH
 {
 	echo( '<!-- DataTables CSS -->
 		<link rel="stylesheet" type="text/css" href="/css/datatables.min.css">
-		<link rel="stylesheet" type="text/css" href="https://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/css/jquery.dataTables.css">
-		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.dataTables.min.css">');
+		<link rel="stylesheet" type="text/css" href="/css/jquery.dataTables.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/select.dataTables.min.css">');
 };
 ?>
