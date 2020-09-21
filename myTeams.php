@@ -225,7 +225,6 @@ $setAsDefault = 0;
 
 if($sheetID == 0){
 	
-	
 	$sheetName = $dataFromSaveCall['gameSheet']['sheetName'];
 	$sheetIDGameSheet = "";
 	$addRowsToGameSheetSQL = "";
@@ -258,16 +257,16 @@ if($sheetID == 0){
 
 	$resultNewSheet = mysqli_query($connection, $addRowsToPositionInfoSQL);
 
-		if (!$resultNewSheet)
-		{
-			echo("Error description: " . mysqli_error($connection));
-		} else {
-			while (mysqli_next_result($connection)) {;} // flush multi_queries
-		}
-		
+	if (!$resultNewSheet)
+	{
+		echo("Error description: " . mysqli_error($connection));
 	} else {
+		while (mysqli_next_result($connection)) {;} // flush multi_queries
+	}
+		
+} else {
 			
-		$updateRowsToPositionInfoSQL = "UPDATE gameSheets SET `numOfPlyrsOnFld`='$numPlyrsToSave' WHERE `gameSheetID`='$sheetID';";
+		$updateRowsToPositionInfoSQL = "UPDATE gameSheets SET `numOfPlyrsOnFld`='$numPlyrsToSave', `isDefault`='$setAsDefault' WHERE `gameSheetID`='$sheetID';";
 		$valuesInsert = [];
 
 		foreach($rowsToAddToTable as $rowToAdd){
@@ -494,9 +493,6 @@ if($sheetID == 0){
 	};
 	
 };
-
-
-
 
 mysqli_close($connection);
 };

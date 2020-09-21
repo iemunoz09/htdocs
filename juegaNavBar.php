@@ -1,6 +1,6 @@
 <?php
 echo '
-<!-- Add a vertical bar with logo on left and hamburger menu on right-->
+<!-- Vertical bar with logo on left and hamburger menu on right-->
 	<nav class="navbar  .navbar-center">
 		<div id="logoContainer" class="navbar-brand">
 			<img src="img/soccerBall.jpg" class="navbrand_img">
@@ -22,24 +22,21 @@ echo '
 		</div>
 	</div>
 	
-	<div class="modal fade" id="modalSelectTeam" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  
-	<div class="modal-dialog" role="document">
-	  <div class="modal-content">
-		<div>
-		<h3>Select Team</h3>
-		<br>
-		
-		<select id="navTeam" class="getTeam" size="8">
-			<option value="" id="loadingNav" class="getTeamLoading" disabled>Loading...</option>
-		</select>
-		
-		<br><br>
+	<div class="modal fade" id="modalSelectTeam" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">	  
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div>
+					<h3>Select Team</h3>
+					<br>
 
-	 </div>
-	  </div>
-	</div>
+					<select id="navTeam" class="getTeam" size="8">
+						<option value="" id="loadingNav" class="getTeamLoading" disabled>Loading...</option>
+					</select>
 
-</div>'
-    
+					<br><br>
+				</div>
+			</div>
+		</div>
+	</div>'
+	 
 ?>

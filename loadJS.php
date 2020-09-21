@@ -17,9 +17,9 @@ if (basename($_SERVER['PHP_SELF']) == 'teamView.php') //* Returns The Current PH
 		<script type="text/javascript" charset="utf8" src="/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="/js/dataTables.fixedHeader.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-		<!-- <script type="text/javascript" charset="utf8" src="/js/datetime-moment.js"></script>	
-		<script type="text/javascript" charset="utf8" src="/js/moment.min.js"></script>-->
-		<script type="text/javascript" charset="utf8" src="/js/jquery.inputmask.min.js"></script>	
+		<script type="text/javascript" charset="utf8" src="/js/moment.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="/js/jquery.inputmask.min.js"></script>
+		<script type="text/javascript" charset="utf8" src="/js/datetime-moment.js"></script>	
 		
 		<!-- For appInterface -->		
 		

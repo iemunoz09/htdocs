@@ -180,12 +180,6 @@ white-space: nowrap;
   background-color: #4CAF50;
 }
 
-
-#numOfPlayers
-{
-	display:inline;	
-}
-
 .field {
 	background-image: url("../img/soccerfieldColor.png");
 	width: 360px;
@@ -208,12 +202,17 @@ white-space: nowrap;
 }
 
 .goalie {
+  z-index:3;
+	position: absolute;
+	text-align: center;
 	background-color: orange !important;
 	width: 50px;
 	height: 50px;
+	touch-action: none;
+	user-select: none;
 }
 
-.fieldPlayer{
+.fpCSS{
 	z-index:3;
 	position: absolute;
 	text-align: center;
@@ -272,17 +271,14 @@ white-space: nowrap;
 	padding: 0;
 }
 
-#numOfPlayersContainer{
-	display: block;
-	margin: 1rem 0;
-	
-}
-
 #numOfPlayersContainer > label, 
 #numOfPlayersContainer > select {
-    margin: 0;
-	display: inline;
+  display: inline-block;
+  width: auto;
+  margin: 15px 5px;
 }
+
+
 
 #gameSheetControls{
 	width: 360px;
@@ -333,4 +329,19 @@ white-space: nowrap;
 
 .messageCriteria{
   text-align: center;
+}
+
+.infoBox{
+  text-align: center;
+  font-size: 1rem;
+  padding: 5px;
+  margin: 0 10px;
+}
+
+#playerToReplaceInfo{
+  justify-content: center;
+  border: black;
+  border-style: solid;
+  width: "7rem";
+  margin: 0 auto;
 }

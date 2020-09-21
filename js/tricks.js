@@ -40,24 +40,38 @@ function pullTeamData (teamIdNumber){
 			} else {		
 				teamInfoDetailsLoad(dataPackage['teamDetails']);
 				rosterSectionLoad(dataPackage['playerRoster']);
-				fieldPositionLoad(dataPackage['fieldPosition']) //include ['gameSheetSettings'] to send and run a function to load settings	
+				fieldPositionLoad(dataPackage['fieldPosition']); //include ['gameSheetSettings'] to send and run a function to load settings	
 				loadGameSheetList(dataPackage['gameSheetList']);
+				setPlayersOnField(dataPackage['gameSheetSettings'][0].numOfPlyrsOnFld);
 			};
 			}});
 };
 
 function teamInfoDetailsLoad(teamInfoArray){
 	
+	var color01 = teamInfoArray[0].teamColor1,
+		color02 = teamInfoArray[0].teamColor2;
+
+
 	document.getElementById('teamNameHeader').innerHTML = teamInfoArray[0].teamName;
 	document.getElementById("teamName").value = teamInfoArray[0].teamName;
 	document.getElementById("leagueID").value = teamInfoArray[0].leagueID;
 	document.getElementById("createdBy").value = teamInfoArray[0].createdBy;
-	document.getElementById("colorOne").value = teamInfoArray[0].teamColor1;
-	document.getElementById("colorTwo").value = teamInfoArray[0].teamColor2;
+	document.getElementById("colorOne").value = color01
+	document.getElementById("colorTwo").value = color02
+
+	applyTeamColors(color01,color02);
 
 };
 
-
+//apply colors to fieldPlayers
+function applyTeamColors(pmryColor, sndryColor){
+	if(pmryColor != null && sndryColor !=null){
+		//apply colors to rounded-circle class
+		$('.fpCSS').css("background-image","linear-gradient("+pmryColor+", "+sndryColor+")");
+		$('.goalie').css("background-image","linear-gradient("+pmryColor+",#FFA500)");
+	};
+};
 
 /*----------------- SECTION 2 - ROSTER -----------------*/
 
@@ -86,40 +100,40 @@ var playersRoster = $('#loadPlayers').DataTable({
 							{ "data" : "jerseyNumber" },
 							{ "data" : "firstName" },
 							{ "data" : "lastName" },
-							{ "data" : "dOB" },
-							{ "data" : "phoneNumber" },
+							{ "data" : "dOB", 
+							  "render": function(data){
+                                return moment(data).format( 'MM/DD/YYYY' );
+						    } },
+							{ "data" : "phoneNumber", 
+							  "render": function ( toFormat ) {
+								var tPhone;
+								
+								tPhone=toFormat.toString();            
+								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
+								
+								return tPhone; }
+							  },
 							{ "data" : "playerID" },
 							{ "data" : "prefComm" },
 							{ "data" : "emailAddress" },
 							{ "data" : "prefLang" },
 							{ "data" : "nickName" },
-							{ "data" : "altPhone" },
+							{ "data" : "altPhone",
+							  "render": function ( toFormat ) {
+								var tPhone;
+								
+								tPhone=toFormat.toString();            
+								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
+								
+								return tPhone;
+							} },
 							{ "data" : "uniformSize" },
 							{ "data" : "primaryPosition" },
 							{ "data" : "secondaryPosition" },
 							{ "data" : "playerComments" }
 							
 							],
-		"columnDefs"    : [ { "targets": "dOB", "render": function(data){
-                                return moment(data).format( 'MM/DD/YYYY' );
-						    }},
-                            { "targets": "phoneNumber", render: function ( toFormat ) {
-								var tPhone;
-								
-								tPhone=toFormat.toString();            
-								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
-								
-								return tPhone;
-							}},
-                            { "targets": "altPhone", render: function ( toFormat ) {
-								var tPhone;
-								
-								tPhone=toFormat.toString();            
-								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
-								
-								return tPhone;
-							}},
-							{ "targets": 'recordId', 
+		"columnDefs"    : [ { "targets": 'recordId', 
 							  "visible": false,
 							  "searchable": false
 						    },
@@ -146,9 +160,9 @@ $('#collapseTwo').on('shown.bs.collapse', function () {
 	/* FORM VALIDATION AND NAVIGATION */
 
 //Phone Masks
-/* $("#phNum").inputmask({"mask": "(999) 999-9999"});
+$("#phNum").inputmask({"mask": "(999) 999-9999"});
 
-$("#altPhoneNum").inputmask({"mask": "(999) 999-9999"}); */
+$("#altPhoneNum").inputmask({"mask": "(999) 999-9999"});
 
 //disable second position dropdown
 document.getElementById('primaryPosition').onchange = function () {
@@ -201,18 +215,14 @@ function submitForm(event) {
 					function(rowInfo){
 						// console.log(rowInfo);
 						if (document.getElementById("pForm").getAttribute('data-formType')=='u'){
-							playersRoster.rows('.selected').row().data(rowInfo).draw();
+							playersRoster.rows().row('.selected').data(rowInfo).draw();
 						} else {
 							playersRoster.row.add(rowInfo).draw();
 						};
 						
+						alert("Record Saved");
 						$('#appFormModal').modal('hide');
-						showTab(0);
-						currentTab = 0;
-						removeFinishFromStep();
-						restoreFormValidation();
-						rosterSectionLoad(rowInfo);
-						alert("Record Saved");						
+						restoreFormValidation();		
 					}	
 	});
 	
@@ -348,9 +358,11 @@ function restoreFormValidation(){ //consider renaming to restoreForm
 	//hide delete player button
 	showTab(0);
 	$("#pForm").trigger('reset');
-	showTab(0);
 	currentTab = 0;
 	removeFinishFromStep();
+
+	//deselect row
+	playersRoster.$('tr.selected').removeClass('selected');
 	
 }
 
@@ -458,21 +470,24 @@ function populateForm(formValues) {
 
 //Code to display/hide users on field 
 			
- document.getElementById("numOfPlayers").onchange=function() {
-    var playersOnField = this.value;
+ document.getElementById("numOfPlayers").onchange= setPlayersOnField(this.value);
+  
+ function setPlayersOnField(playersOnField) {
 	
-      if ( playersOnField == '10')
-      {
-		document.getElementById("fieldPlayer10").style.visibility = "hidden";
-		document.getElementById("fieldPlayer9").style.visibility = "visible";
-      } else if ( playersOnField == '9')
-      {
-		document.getElementById("fieldPlayer10").style.visibility = "hidden";
-		document.getElementById("fieldPlayer9").style.visibility = "hidden";
-      } else  {
-		document.getElementById("fieldPlayer10").style.visibility = "visible";
-		document.getElementById("fieldPlayer9").style.visibility = "visible";
-	  }};	
+	$("#numOfPlayers").val(playersOnField);
+
+	if ( playersOnField == '10')
+	{
+	document.getElementById("fieldPlayer10").style.visibility = "hidden";
+	document.getElementById("fieldPlayer9").style.visibility = "visible";
+	} else if ( playersOnField == '9')
+	{
+	document.getElementById("fieldPlayer10").style.visibility = "hidden";
+	document.getElementById("fieldPlayer9").style.visibility = "hidden";
+	} else  {
+	document.getElementById("fieldPlayer10").style.visibility = "visible";
+	document.getElementById("fieldPlayer9").style.visibility = "visible";
+}};	
 
 
 	/* Load Position on Field
@@ -486,6 +501,7 @@ function fieldPositionLoad(playerPositions){
 		
 	}else{
 		var selectElements = document.getElementsByClassName('fieldPlayer');
+		
 
 		// for each array value grab the ID and position and pull values.	
 		for(var i=0; i<selectElements.length; i++)
@@ -494,12 +510,18 @@ function fieldPositionLoad(playerPositions){
 			var valueIndexInArray = playerPositions.findIndex(playerPositions => playerPositions.htmlID === elementId);
 															
 			if(elementId == playerPositions[valueIndexInArray].htmlID){
-				
 				elem = document.getElementById(elementId),
+				elem.style.removeProperty('transform'),
 				elem.style.left = playerPositions[valueIndexInArray].htmlLeft+ 'px',
 				elem.style.top = playerPositions[valueIndexInArray].htmlTop+ 'px',
 				elem.setAttribute('data-idjersey','['+playerPositions[valueIndexInArray].recordIDfromRoster+','+playerPositions[valueIndexInArray].jerseyNumber+']');
 				elem.innerHTML = playerPositions[valueIndexInArray].jerseyNumber;
+
+				if(elem.hasAttribute('data-x')||elem.hasAttribute('data-y')){
+					elem.setAttribute('data-x','0');
+					elem.setAttribute('data-y','0');
+				}
+
 			} else {
 				//handle empty fieldPlayer assignment
 				document.getElementById(elementId).innerHTML = '#';
@@ -545,9 +567,9 @@ var playerOnField = interact('.fieldPlayer');
 
 	//drag fieldPlayer class
 playerOnField.draggable({
-			onmove: dragMoveListener,
-			modifiers: restrictToParent
-	});
+	onmove: dragMoveListener,
+	modifiers: restrictToParent
+});
 
 	/*Double click on field player
 	//On double click for class = fieldPlayer display availablePlayersBox in a modal/pop up window*/
@@ -558,6 +580,8 @@ function doubleTapAction(event) {
  	var	elem = 	jQuery(event.target),
 		elementID = $(elem).attr('id')
 		
+		//call a function to update Player to be Replaced boxes
+		playerToReplaceInfo(elementID);		
 		loadAvailablePlayersTable();
 		
 		//Display Available Players modal and unbind doubletap event
@@ -579,7 +603,37 @@ function doubleTapAction(event) {
 		});
 };
 
+//function to update Player to be Replaced boxes
+function playerToReplaceInfo(elementIDPTR){
 
+	var playerToReplaceFN, valuesToTest;
+
+	idjerseyArrayValue = $("#"+elementIDPTR).attr('data-idjersey');
+				
+	if (idjerseyArrayValue == ""){
+		; //nothing to replace
+	} else {
+		elementArrayInJSON = JSON.parse(idjerseyArrayValue);
+		rosterIDJSON = elementArrayInJSON[0];
+		jerseyNumberJSON = elementArrayInJSON[1];
+
+		//look for jerseryNumber in dataTable and get Index and then pull firstName using index
+		valuesToTest = playersRoster.rows().data();
+
+		for(var i = valuesToTest.length - 1; i>=0 ; i--){
+			if(valuesToTest[i].recordId==rosterIDJSON){
+				console.log(valuesToTest[i].recordId);
+				playerToReplaceFN = valuesToTest[i].firstName;
+			};
+		};
+
+		$("#pReplaceElementJ").text(jerseyNumberJSON);
+	
+		$("#pReplaceElementN").text(playerToReplaceFN);
+
+
+	};
+};
 		
 $("#availablePlayersModal").on("hide.bs.modal", function () {
 	// put your default event here
@@ -635,9 +689,6 @@ function loadAvailablePlayersTable(){
 			
 		//if recordIDFromRoster is in fieldPositionArry
 		//then remove element from availablePlayersArray
-		
-
-			
 		for(var i = availablePlayersArray.length - 1; i>=0; i--){
 			
 			fieldRecordIDInt = parseInt(availablePlayersArray[i].recordId);
@@ -690,6 +741,7 @@ function loadGameSheetList(gameSheetListArray){
 		$('#loadingGameSheetList').text('Select Sheet');
 		$('#gameSheetLoading').text('Select Sheet');
 	};
+	
 };
 
 
@@ -713,7 +765,7 @@ gameSheetElement.onchange = function updateGameSheet(){
 							};
 		
 		loadGameSheetToSave(dataToSendGameSheetOnSave);
-	} else {};
+	} else {/*error handling */};
 };
 
 $('#saveNewGameSheetButton').click(function(){
@@ -721,7 +773,6 @@ $('#saveNewGameSheetButton').click(function(){
 //Get sheet name from input box to save new sheet 
 var sheetNameToSave = document.getElementById('gameSheetName').value,
 	numPlyrsToSave = document.getElementById('numOfPlayers').value;
-
 
 //create gameSheetID and then use new ID to savePositions
 dataToSendGameSheetOnSave = {	
@@ -759,11 +810,12 @@ $('#loadGameSheetButton').click(function(){
 				}
 		}).done( function (fieldPositions){
 			
-			fieldPositionsArray = fieldPositions['positions'];
-			
+			fieldPositionsArray = fieldPositions['positions'],
+			numPlayersOnField = fieldPositions['playersOnField'];
+
 			// console.log(fieldPositions);
 			fieldPositionLoad(fieldPositionsArray);
-			$("#numOfPlayers").val(fieldPositions['playersOnField']);
+			setPlayersOnField(numPlayersOnField);
 			$('#loadGameSheetModal').modal('hide');
 			alert("Sheet Loaded");
 		})
@@ -875,6 +927,7 @@ var teamNameChange = document.getElementById('teamName').value,
 	colorOneChange = document.getElementById('colorOne').value,
 	colorTwoChange = document.getElementById('colorTwo').value;
 
+	applyTeamColors(colorOneChange,colorTwoChange);
 
 //include alert to send to confirm update
 	var confirmTeamDetailsUpdate = confirm("Update "+ teamNameChange + " details?");
