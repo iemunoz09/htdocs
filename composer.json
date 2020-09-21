@@ -1,5 +1,6 @@
 {
     "require": {
-        "auth0/auth0-php": "~5.0"
+        "auth0/auth0-php": "~5.0",
+        "arrilot/dotenv-php": "^2.0"
     }
 }

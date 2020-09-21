@@ -42,6 +42,7 @@ class ComposerStaticInitdb3aa52e1bc1e2f7fa3abc7ec5bbb472
         'A' => 
         array (
             'Auth0\\SDK\\' => 10,
+            'Arrilot\\DotEnv\\' => 15,
         ),
     );
 
@@ -85,6 +86,10 @@ class ComposerStaticInitdb3aa52e1bc1e2f7fa3abc7ec5bbb472
         'Auth0\\SDK\\' => 
         array (
             0 => __DIR__ . '/..' . '/auth0/auth0-php/src',
+        ),
+        'Arrilot\\DotEnv\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/arrilot/dotenv-php/src',
         ),
     );
 

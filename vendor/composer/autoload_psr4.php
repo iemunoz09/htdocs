@@ -16,4 +16,5 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Auth0\\SDK\\' => array($vendorDir . '/auth0/auth0-php/src'),
+    'Arrilot\\DotEnv\\' => array($vendorDir . '/arrilot/dotenv-php/src'),
 );
