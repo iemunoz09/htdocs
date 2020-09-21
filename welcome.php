@@ -52,7 +52,7 @@ if (!$userInfo) {
 		<br>
 		
 		<select id="team" class="getTeam" size="8">
-			<option value="0" id="loading" class="getTeamLoading" disabled>Loading...</option>
+			<option value="" id="loading" class="getTeamLoading" disabled>Loading...</option>
 		</select>
 		
 		<br><br>

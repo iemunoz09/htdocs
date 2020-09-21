@@ -17,7 +17,7 @@ echo '
 			<a class="nav_sections active" href="welcome.php">Home</a>
 			<a class="nav_sections" data-toggle="modal" href="#modalSelectTeam">Team</a>
 			<a class="nav_sections" href="profile.php">Profile</a>							
-			<a class="nav_sections" href="aboutUs.php">About &#161;JUEGA!</a>	
+			<a class="nav_sections" href="aboutJUEGA.php">About &#161;JUEGA!</a>	
 			<a id="qsLogoutBtn" href="logout.php">Logout</a>									
 		</div>
 	</div>

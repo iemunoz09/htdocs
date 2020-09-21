@@ -49,6 +49,8 @@ var selectedValue = this.value;
 		//open New Team prompt
 		console.log("In New Team selection");
 		$('#modalNewTeam').modal('show');
+	} else if(selectedValue == ""){
+		return;
 	} else {
 		//navigate to Teams page and pass on selectionValue in query string i.e. myTeams.php?teamPage=selectionValue
 		console.log("In Team's page selection");
