@@ -1,6 +1,6 @@
 <?php
 
-require 'authenticate.php';
+require 'components/authenticate.php';
 
 $auth0->logout();
 $return_to = 'http://' . $_SERVER['HTTP_HOST'];

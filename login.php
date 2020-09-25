@@ -1,7 +1,7 @@
 <?php
 // login.php
 
-require 'authenticate.php';
+require 'components/authenticate.php';
 
 $auth0->login();
 

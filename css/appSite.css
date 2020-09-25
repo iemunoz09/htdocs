@@ -13,6 +13,11 @@ header {
   z-index: 100;
 }
 
+@font-face {
+  font-family: jerseyNumberFont;
+  src: url(/fonts/OldSport01CollegeNcv-aeGm.ttf);
+}
+
 h1 {
 	font-size: 20pt;
 	font-family:  Arial Black;
@@ -197,11 +202,17 @@ white-space: nowrap;
 	position: relative;
 	z-index: 1;
 }
+
 .grid-container>div {
-  font-size: calc(80% + 1vw + 1vh);
+  font-size: calc(100% + 1vw + 1vh);
+}
+
+.popover {
+  white-space: pre-wrap;    
 }
 
 .goalie {
+  font-family: jerseyNumberFont;
   z-index:3;
 	position: absolute;
 	text-align: center;
@@ -209,10 +220,13 @@ white-space: nowrap;
 	width: 50px;
 	height: 50px;
 	touch-action: none;
-	user-select: none;
+  user-select: none;
+  -webkit-text-stroke: .1px whitesmoke;
+  line-height: 45px;
 }
 
 .fpCSS{
+  font-family: jerseyNumberFont;
 	z-index:3;
 	position: absolute;
 	text-align: center;
@@ -220,7 +234,9 @@ white-space: nowrap;
 	height: 50px;
 	background-color: gray;
 	touch-action: none;
-	user-select: none;
+  user-select: none;
+  -webkit-text-stroke: .1px whitesmoke;
+  line-height: 45px;
 }
 
 /*Right & Left*/
@@ -267,8 +283,8 @@ white-space: nowrap;
 	right: 0;
 }
 
-#appInterfaceContainer {
-	padding: 0;
+#appInterfaceContainer, #rosterTableContainer {
+  padding: 0;
 }
 
 #numOfPlayersContainer > label, 
@@ -278,7 +294,10 @@ white-space: nowrap;
   margin: 15px 5px;
 }
 
-
+.marginLeftRightIsZero{
+  margin-left: 0;
+  margin-right: 0;
+}
 
 #gameSheetControls{
 	width: 360px;

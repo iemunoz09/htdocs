@@ -4,7 +4,7 @@ require 'vendor/autoload.php';
 use Arrilot\DotEnv\DotEnv;
 use Auth0\SDK\Auth0;
 
-DotEnv::load('.env.php');
+DotEnv::load('components/.env.php');
 
 $auth0 = new Auth0([
   'domain' => DotEnv::get('AUTH0_DOMAIN'),

@@ -6,7 +6,7 @@ echo ('	<!-- jQuery first, then Bootstrap Bundle JS (Bundle includes Popper) -->
 		<script type="text/javascript" charset="utf8" src="/js/bootstrap 4.5/bootstrap.bundle.min.js" ></script>
 		<script type="text/javascript" charset="utf8" src="/js/sourcery.js"></script>');
 		
-if (basename($_SERVER['PHP_SELF']) == 'teamView.php') //* Returns The Current PHP File Name */
+if (basename($_SERVER['PHP_SELF']) == 'teamView.php') /* Returns The Current PHP File Name */
 {
 	echo(		
 		'<script type="text/javascript" charset="utf8" src="/js/tricks.js"></script>
@@ -14,7 +14,7 @@ if (basename($_SERVER['PHP_SELF']) == 'teamView.php') //* Returns The Current PH
 		<!-- For appForm -->
 		
 		<!-- DataTables -->
-		<script type="text/javascript" charset="utf8" src="/js/jquery.dataTables.min.js"></script> //goes before fixedHeader and select
+		<script type="text/javascript" charset="utf8" src="/js/jquery.dataTables.min.js"></script> <!-- goes before fixedHeader and select -->
 		<script type="text/javascript" charset="utf8" src="/js/dataTables.fixedHeader.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="/js/dataTables.select.min.js"></script>
 		<script type="text/javascript" charset="utf8" src="/js/moment.min.js"></script>

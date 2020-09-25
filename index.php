@@ -1,4 +1,4 @@
-<?php require 'authenticate.php'; ?>
+<?php require 'components/authenticate.php'; ?>
 
 <html lang="en">
 	<head>
@@ -10,8 +10,10 @@
 
 		<title>&#161;JUEGA! - Login</title>
 
-		<link rel="stylesheet" type="text/css" href="/css/bootstrap 4.5/bootstrap.min.css" >
-		<link rel="stylesheet" type="text/css" href="/css/appSite.css">
+		<?php
+			include 'components/loadCSS.php'; 
+			include 'components/juegaNavBar.php';	  
+		?>
 
 	</head>
 	
@@ -22,20 +24,21 @@
 			<h2>GameTime</h2>
 		</div>
 
-<?php if (!$userInfo) { ?>
-	<meta http-equiv="Refresh" content="0; url='login.php'" />
-    User is not logged in <br>
-    
-	<a href="login.php">Log In</a>		
+	<?php if (!$userInfo) { ?>
+
+	<meta http-equiv="Refresh" content="0; url='login.php'" />User is not logged in<br>
+	<a href="components/login.php">Log In</a>		
     
 	<?php	} else { ?>
+
     // User is authenticated
     // See below for how to display user information
 	// redirect to welcome.php 
 	<meta http-equiv="Refresh" content="0; url='welcome.php'" />
-	<a id="qsLogoutBtn" class="btn btn-warning btn-logout" href="logout.php">Logout</a>
+	<a id="qsLogoutBtn" class="btn btn-warning btn-logout" href="components/logout.php">Logout</a>
+
 	<?php };	?>
 
 
-		</body>	
+	</body>	
 </html>

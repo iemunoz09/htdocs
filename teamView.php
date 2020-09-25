@@ -1,40 +1,29 @@
 <?php
-
-require 'authenticate.php';
-
-// ini_set('display_errors', 1); 
-// ini_set('display_startup_errors', 1); 
-// error_reporting(E_ALL);
+require 'components/authenticate.php';
 
 if (!$userInfo) {
-
 	echo 'Invalid login';
-	header('Location: logout.php');
+	header('Location: /components/logout.php');
     exit();
-
 } else { ?>
-
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-		<meta http-equiv="Pragma" content="no-cache" />
-		<meta http-equiv="Expires" content="0" />
-
-		<title>&#161;JUEGA! - Team View</title>
-
-	</head>
-	<body>
-
-	<?php
-			include 'loadCSS.php'; 
-			include 'juegaNavBar.php';	  
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+			<meta http-equiv="Pragma" content="no-cache" />
+			<meta http-equiv="Expires" content="0" />
+			<title>&#161;JUEGA! - Team View</title>
+		</head>
+		<body>
+		<?php
+			include 'components/loadCSS.php'; 
+			include 'components/juegaNavBar.php';	  
 		?>
 
 		<div class="accordion" id="accordionView">
-		
+
 		  <div class="card z-depth-0 bordered" id="teamNameAccordian">
 			<div class="card-header" id="headingOne">
 			  <h2 class="mb-0">
@@ -74,11 +63,11 @@ if (!$userInfo) {
 						<div class="form-label-group">
 							<label for="colorOne">Primary Color</label>
 							<input type="color" id="colorOne" name="colorOne" disabled >
-						</div>	
-						<div class="form-label-group">
+
 							<label for="colorTwo">Secondary Color</label>
 							<input type="color" id="colorTwo" name="colorTwo" disabled >
-						</div>						
+						</div>
+
 					</div>
 					
 					<div id="saveTeamDetailsButtonDiv" class="justify-content-center" style="display:none">
@@ -102,11 +91,45 @@ if (!$userInfo) {
 				</div>
 
 				<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionView">
-					<div class="card-body">
+					<div id="rosterTableContainer" class="card-body">
 						<!-- Include appForm here -->
-						<div id="rosterButtons" class="row">
-							<button id="addPlayerButton" type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#appFormModal"><b>Add Player</b></button>
-							<button id="sendMessageModalButton" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#sendMessageModal"><b>Message</b></button>
+						<div style="margin: 0 auto;">
+							<div id="helpButtonFieldDiv" class="row marginLeftRightIsZero">
+								<button id ="rosterHints" class="btn btn-light" type="button" data-toggle="popover" data-trigger="focus" style="margin: 0 0 0 auto" title="Roster Actions" data-content="Add a new user<br>Edit existing users by clicking on the row<br>Delete users from the edit menu.">?</button>
+							</div>
+							<div id="rosterButtons" class="row marginLeftRightIsZero">
+								<button id="addPlayerButton" type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#appFormModal"><b>Add Player</b></button>
+								<button id="sendMessageModalButton" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#sendMessageModal"><b>Message</b></button>
+							</div>
+						</div>
+
+						<div id="tableContainer" class="align-content-center" >
+							<div class="loadPlayersDiv" label="Roster">	
+								<table id="loadPlayers" class="display nowrap">
+									<thead>
+										<tr>
+											<th>#</th>
+											<th>First Name</th>
+											<th>Last Name</th>
+											<th>DOB</th>
+											<th>Phone<br>Number</th>
+											<th>PlayerID</th>
+											<th>Preferred<br>Communication</th>
+											<th>Email</th>
+											<th>Preferred<br>Language</th>
+											<th>Nickname</th>
+											<th>Alternate<br>Phone Number</th>
+											<th>Uniform<br>Size</th>
+											<th>Primary<br>Position</th>
+											<th>Secondary<br>Position</th>
+											<th>Comments</th>
+										</tr>
+									</thead>
+									<tfoot>
+
+									</tfoot>
+								</table>
+							</div>					
 						</div>
 
 						<div id="appFormModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -307,35 +330,7 @@ if (!$userInfo) {
 								</div>	
 							</div>
 						</div>
-
-						<div id="tableContainer" class="align-content-center" >
-							<div class="loadPlayersDiv" label="Roster">	
-								<table id="loadPlayers" class="display nowrap">
-									<thead>
-										<tr>
-											<th>#</th>
-											<th>First Name</th>
-											<th>Last Name</th>
-											<th>DOB</th>
-											<th>Phone<br>Number</th>
-											<th>PlayerID</th>
-											<th>Preferred<br>Communication</th>
-											<th>Email</th>
-											<th>Preferred<br>Language</th>
-											<th>Nickname</th>
-											<th>Alternate<br>Phone Number</th>
-											<th>Uniform<br>Size</th>
-											<th>Primary<br>Position</th>
-											<th>Secondary<br>Position</th>
-											<th>Comments</th>
-										</tr>
-									</thead>
-									<tfoot>
-
-									</tfoot>
-								</table>
-							</div>					
-						</div>
+		
 					</div>
 				</div>
 
@@ -354,7 +349,9 @@ if (!$userInfo) {
 			<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionView">
 				<div id="appInterfaceContainer" class="card-body">
 					<!-- Include appInterface here -->
-
+					<div id="helpButtonRosterDiv" class="row marginLeftRightIsZero">
+						<button id ="rosterHints" class="btn btn-light" type="button" data-toggle="popover" data-trigger="focus" style="margin: 0 0 0 auto" title="Field Player Actions" data-content="Drag the field players to move positins.<br>Double-tap field player to switch with an available player<br>">?</button>
+					</div>
 					<div id="numOfPlayersContainer" class="">
 						<label for="numOfPlayers"><h5>Players on field?</h5></label>
 						<select class="form-control form-sm" id="numOfPlayers" name="numOfPlayers" required>
@@ -493,12 +490,10 @@ if (!$userInfo) {
 			</div>
 		  </div>
 
-
-		  <?php
-			include 'footer.php'; 
-			include 'loadJS.php'; 
+		<?php
+			include 'components/footer.php'; 
+			include 'components/loadJS.php'; 
 		?>
-
-	</body>
-</html>
+		</body>
+	</html>
 <?php }; ?>

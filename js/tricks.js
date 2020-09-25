@@ -91,7 +91,8 @@ var playersRoster = $('#loadPlayers').DataTable({
 		"scrollY"		: '50vh',
         "scrollCollapse": true,
 		"pageLength"	: 30,
-        "paging"		: true,
+		"paging"		: false,
+		"bLengthChange"	: false,
 		"autoWidth"		: false,
 		"language"		: {
 							"lengthMenu": ""
@@ -411,8 +412,6 @@ $('#appFormModal').on('show.bs.modal', function (e) {
 $('#appFormModal').on('hide.bs.modal', function (e) {
   restoreFormValidation();
 })
-
-
 
 playersRoster.on('select', function(e, dt, type, indexes) {   //add event handler for selecting row and returning data
 	
@@ -973,5 +972,10 @@ var teamNameChange = document.getElementById('teamName').value,
 });
 
 
+$(function enablePopovers() {
+	$('[data-toggle="popover"]').popover({
+		html: true
+	});
+  })
 
 });

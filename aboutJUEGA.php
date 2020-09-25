@@ -1,5 +1,5 @@
 <?php
-require 'authenticate.php';
+require 'components/authenticate.php';
 
 if (!$userInfo) {
 
@@ -26,8 +26,8 @@ if (!$userInfo) {
 	<body>
 
 		<?php
-			include 'loadCSS.php'; 
-			include 'juegaNavBar.php';	  
+			include 'components/loadCSS.php'; 
+			include 'components/juegaNavBar.php';	  
 		?>
 
         <div class="aboutJuegaDiv">
@@ -37,8 +37,8 @@ if (!$userInfo) {
         </div>
 <br>
                 <?php
-                    include 'footer.php'; 
-                    include 'loadJS.php'; 
+                    include 'components/footer.php'; 
+                    include 'components/loadJS.php'; 
                 ?>
 	</body>
 
