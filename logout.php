@@ -21,14 +21,15 @@ die();
 
 		<title>&#161;JUEGA! - Home</title>
 
-		<link rel="stylesheet" type="text/css" href="/css/bootstrap 4.5/bootstrap.min.css" >
-		<link rel="stylesheet" type="text/css" href="/css/appSite.css">
+		<?php
+			include 'components/loadCSS.php';  
+		?>
 
 	</head>
 	
 	<body>
 	
-		<div class="containerStyle">
+		<div id="logoutContainer">
 			<h1>&#161;JUEGA!</h1>
 			<h2>GameTime</h2>
 			<h3>Sign Out Successful</h3>

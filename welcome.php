@@ -23,15 +23,15 @@ if (!$userInfo) {
 			include 'components/juegaNavBar.php';	  
 		?>
 
-		<div class="">
-			<br><h2>&#161;Bienvenidos <span class="nickname"><?php echo $userInfo['nickname'] ?></span>!</h2>
+		<div id="welcomeContainer">
+			<br><h2>&#161;Bienvenidos <?php echo $userInfo['nickname'] ?>!</h2>
 			<br>
 			<p>Juega provides tools to maximize your coaching experience <br>to faciliate the development and performance of your team.</p>
 			<br>
 			<h3>Select Team</h3>
 			<br>
 			
-			<select id="team" class="getTeam form-control" size="8">
+			<select id="team" class="getTeam" size="8">
 				<option value="" id="loading" class="getTeamLoading" disabled>Loading...</option>
 			</select>
 			<br><br>
@@ -40,7 +40,7 @@ if (!$userInfo) {
 		<div class="modal fade" id="modalNewTeam" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
-					<form class="" id="saveNewTeamForm" name="saveNewTeamForm" method="">				
+					<form id="saveNewTeamForm" name="saveNewTeamForm" method="">				
 						<div class="modal-header text-center">
 						<h4 class="modal-title w-100 font-weight-bold">Add New Team</h4>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">

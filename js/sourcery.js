@@ -34,7 +34,7 @@ $(function loadList(){
 		}
 	});
 });
-
+	
 $('.getTeam').click(function navigateToTeamPage(){
 	var selectedValue = this.value;
 	 

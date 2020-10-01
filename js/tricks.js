@@ -2,28 +2,43 @@ $(document).ready(function() {
 
 var teamID='';
 
-
-/*----------------- SECTION 1 - TEAM DETAILS AND LOAD PAGE -----------------*/
-$(function getTeamID(){
-$.urlParam = function(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results==null) {
-       return null;
-    }
-    return decodeURI(results[1]) || 0;
-}
-
-teamID = $.urlParam('teamID');
-pullTeamData(teamID);
+//functions to start on load
+$(function startOnLoad() {
+	enablePopovers();
+	
+	teamID = getTeamIdToPullData();	
+	pullTeamData(teamID);
 });
 
+});
+
+function enablePopovers() {
+	$('[data-toggle="popover"]').popover({
+		html: true
+	});
+  }
+  
+/*----------------- SECTION 1 - TEAM DETAILS -----------------*/
 //Use one ajax/php call to pull ALL NECESSARY DATA for teamView load
 //teamInfo section;roster section; field position section
+
+function getTeamIdToPullData(){
+	$.urlParam = function(name){
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results==null) {
+		   return null;
+		}
+		return decodeURI(results[1]) || 0;
+	}
+	
+	teamID = $.urlParam('teamID');
+	return teamID;
+}
 
 function pullTeamData (teamIdNumber){
 	//teamName; teamColor1; teamColor2; leagueID
 	
-	var urlTeamID = '../myTeams.php?teamViewData='+teamIdNumber;
+	var urlTeamID = `../myTeams.php?teamViewData=${teamIdNumber}`;
 	
 		$.ajax({
             url: urlTeamID,
@@ -64,6 +79,79 @@ function teamInfoDetailsLoad(teamInfoArray){
 
 };
 
+$('#editTeamDetails').click(function(){
+     
+    if($(this).prop('checked') == false){
+		document.getElementById("teamName").disabled = true;
+		document.getElementById("colorOne").disabled = true;
+		document.getElementById("colorTwo").disabled = true;
+		$("#saveTeamDetailsButtonDiv").hide();
+		document.getElementById("saveTeamDetailsButton").disabled = true;
+		$("#deleteTeam").css('visibility','hidden');;
+		
+    }
+    else {
+		document.getElementById("teamName").disabled = false;
+		document.getElementById("colorOne").disabled = false;
+		document.getElementById("colorTwo").disabled = false;		
+		$("#saveTeamDetailsButtonDiv").show();
+		document.getElementById("saveTeamDetailsButton").disabled = false;
+		$("#deleteTeam").css('visibility','visible');
+	}
+});
+
+$('#saveTeamDetailsButton').click(function(){
+
+//Get sheet name from input box to save new sheet 
+var teamNameChange = document.getElementById('teamName').value,
+	colorOneChange = document.getElementById('colorOne').value,
+	colorTwoChange = document.getElementById('colorTwo').value;
+
+	applyTeamColors(colorOneChange,colorTwoChange);
+
+//include alert to send to confirm update
+	var confirmTeamDetailsUpdate = confirm("Update "+ teamNameChange + " details?");
+
+	if (confirmTeamDetailsUpdate == true) {
+
+		//proceed to update record
+		
+		dataToSendTeamDetailsOnSave = {	
+							'teamID': parseInt(teamID),
+							'teamName': teamNameChange,
+							'colorOne': colorOneChange,
+							'colorTwo': colorTwoChange
+							};
+							
+		JSONToSendTeamDetailsOnSave	= JSON.stringify(dataToSendTeamDetailsOnSave);				
+		
+		//load array into ajax call to send to database
+	$.ajax({
+		type: 'POST',
+		url: '../myTeams.php?saveTeamDetails',
+		data: {'updatedTeamDetails': JSONToSendTeamDetailsOnSave},
+		error: function(xhr, textStatus, error) {
+				console.log(xhr.responseText);
+				console.log(xhr.statusText);
+				console.log(textStatus);
+				console.log(error);
+				}
+		}).done( function (data){
+			// console.log(data);
+			$('#editTeamDetails').prop('checked',false);
+			document.getElementById("teamName").disabled = true;
+			document.getElementById("colorOne").disabled = true;
+			document.getElementById("colorTwo").disabled = true;
+			$("#saveTeamDetailsButtonDiv").hide();
+			document.getElementById("saveTeamDetailsButton").disabled = true;
+			alert("Team Details Saved");
+			
+		});
+		
+	} else {;};
+							
+});
+
 //apply colors to fieldPlayers
 function applyTeamColors(pmryColor, sndryColor){
 	if(pmryColor != null && sndryColor !=null){
@@ -73,7 +161,113 @@ function applyTeamColors(pmryColor, sndryColor){
 	};
 };
 
+$('#deleteTeam').click(function(){
+	
+	//get teamID
+	//alert user this will delete ALL associated players, game sheets and team information
+	//run SQL that removes game sheets and gameID
+	//consider leaving players to facilate returning players
+	teamID = $.urlParam('teamID');
+	teamName = document.getElementById("teamName").value;
+	
+	var confirmDeleteTeam = confirm("WARNING: This will remove all team information. \nDelete "+teamName+"?");
+	
+	if (confirmDeleteTeam == true) {
+			
+		//delete Row
+		$.ajax({
+			type: 'POST',
+			url: '../myTeams.php?deleteTeam='+parseInt(teamID),
+			error: function(xhr, textStatus, error) {
+					console.log(xhr.responseText);
+					console.log(xhr.statusText);
+					console.log(textStatus);
+					console.log(error);
+					}
+			}).done( function (data){
+				// console.log(data);
+
+				//confirm deletion
+		alert("Team Deleted");
+				//return to welcome.php
+		window.location.replace("welcome.php");
+
+		});
+	};
+});
+
+
 /*----------------- SECTION 2 - ROSTER -----------------*/
+
+var playersRoster = $('#loadPlayers').DataTable({
+	"searching"		: false,
+	"processing"	: true,
+	"data"			: "",
+	"dataType"		: 'JSON',
+	"scrollX"		: true,
+	"scrollY"		: '50vh',
+	"scrollCollapse": true,
+	"pageLength"	: 30,
+	"paging"		: false,
+	"bLengthChange"	: false,
+	"autoWidth"		: false,
+	"language"		: {
+						"lengthMenu": ""
+						},
+	"columns" 		: [
+						{ "data" : "jerseyNumber" },
+						{ "data" : "firstName" },
+						{ "data" : "lastName" },
+						{ "data" : "dOB", 
+						  "render": function(data){
+							return moment(data).format( 'MM/DD/YYYY' );
+						} },
+						{ "data" : "phoneNumber", 
+						  "render": function ( toFormat ) {
+							var tPhone;
+							
+							tPhone=toFormat.toString();            
+							tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
+							
+							return tPhone; }
+						  },
+						{ "data" : "playerID" },
+						{ "data" : "prefComm" },
+						{ "data" : "emailAddress" },
+						{ "data" : "prefLang" },
+						{ "data" : "nickName" },
+						{ "data" : "altPhone",
+						  "render": function ( toFormat ) {
+							var tPhone;
+							
+							tPhone=toFormat.toString();            
+							tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
+							
+							return tPhone;
+						} },
+						{ "data" : "uniformSize" },
+						{ "data" : "primaryPosition" },
+						{ "data" : "secondaryPosition" },
+						{ "data" : "playerComments" }
+						
+						],
+	"columnDefs"    : [ { "targets": 'recordId', 
+						  "visible": false,
+						  "searchable": false
+						},
+						{ "targets": 'teamID', 
+						  "visible": false,
+						  "searchable": false
+						}
+						],
+	"fixedColumns"	:   {
+						leftColumns: 2
+						},
+	"select"		:  'single',
+	"error"			:	function (obj, textstatus) {
+							alert(obj.msg);
+						}
+						});	
 
 function rosterSectionLoad(playersTableData){
 //load the table as a dataTable
@@ -81,84 +275,12 @@ function rosterSectionLoad(playersTableData){
 
 };
 
-
-var playersRoster = $('#loadPlayers').DataTable({
-		"searching"		: false,
-        "processing"	: true,
-        "data"			: "",
-		"dataType"		: 'JSON',
-		"scrollX"		: true,
-		"scrollY"		: '50vh',
-        "scrollCollapse": true,
-		"pageLength"	: 30,
-		"paging"		: false,
-		"bLengthChange"	: false,
-		"autoWidth"		: false,
-		"language"		: {
-							"lengthMenu": ""
-							},
-		"columns" 		: [
-							{ "data" : "jerseyNumber" },
-							{ "data" : "firstName" },
-							{ "data" : "lastName" },
-							{ "data" : "dOB", 
-							  "render": function(data){
-                                return moment(data).format( 'MM/DD/YYYY' );
-						    } },
-							{ "data" : "phoneNumber", 
-							  "render": function ( toFormat ) {
-								var tPhone;
-								
-								tPhone=toFormat.toString();            
-								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
-								
-								return tPhone; }
-							  },
-							{ "data" : "playerID" },
-							{ "data" : "prefComm" },
-							{ "data" : "emailAddress" },
-							{ "data" : "prefLang" },
-							{ "data" : "nickName" },
-							{ "data" : "altPhone",
-							  "render": function ( toFormat ) {
-								var tPhone;
-								
-								tPhone=toFormat.toString();            
-								tPhone='(' + tPhone.substring(0,3) + ') ' + tPhone.substring(3,6) + '-' + tPhone.substring(6,10);   
-								
-								return tPhone;
-							} },
-							{ "data" : "uniformSize" },
-							{ "data" : "primaryPosition" },
-							{ "data" : "secondaryPosition" },
-							{ "data" : "playerComments" }
-							
-							],
-		"columnDefs"    : [ { "targets": 'recordId', 
-							  "visible": false,
-							  "searchable": false
-						    },
-							{ "targets": 'teamID', 
-							  "visible": false,
-							  "searchable": false
-						    }
-							],
-		"fixedColumns"	:   {
-							leftColumns: 2
-							},
-		"select"		:  'single',
-		"error"			:	function (obj, textstatus) {
-								alert(obj.msg);
-							}
-							});	
-
-
+//resize dataTable
 $('#collapseTwo').on('shown.bs.collapse', function () {
   playersRoster.columns.adjust().draw();
 })
 
-
-	/* FORM VALIDATION AND NAVIGATION */
+/* FORM VALIDATION AND NAVIGATION */
 
 //Phone Masks
 $("#phNum").inputmask({"mask": "(999) 999-9999"});
@@ -190,6 +312,8 @@ function submitForm(event) {
 	var formData = $('#pForm').serializeArray(),
 		recordID = document.getElementById("pForm").getAttribute('data-recordID');
 	
+		getTeamIdToPullData();
+
 	if (document.getElementById("pForm").getAttribute('data-formType')=='u'){
 		var submitURL = '../myTeams.php?teamID='+parseInt(teamID)+'&playerRecord='+parseInt(recordID);
 	} else {
@@ -445,7 +569,6 @@ function updateMenuChanges(recordID){
 	document.getElementById("deleteUserFromRoster").style.display = "inline-block";
 };
 
-
 function populateForm(formValues) {
 	document.getElementById("firstName").value = formValues[0].firstName;
 	document.getElementById("lastName").value = formValues[0].lastName;
@@ -488,12 +611,11 @@ function populateForm(formValues) {
 	document.getElementById("fieldPlayer9").style.visibility = "visible";
 }};	
 
-
-	/* Load Position on Field
-	// 1. have this element load values from table and select default gamesheet
-	// 2. identify element htmlId
-	// 3. look in array for same element 
-	// 4. assign top and left position to element */
+/* Load Position on Field
+// 1. have this element load values from table and select default gamesheet
+// 2. identify element htmlId
+// 3. look in array for same element 
+// 4. assign top and left position to element */
 function fieldPositionLoad(playerPositions){
 	
 	if(playerPositions.length==0){
@@ -539,7 +661,7 @@ function fieldPositionLoad(playerPositions){
 	};	
 };
 
-	//Declares fieldPlayer class as dragabble elements
+//Declares fieldPlayer class as dragabble elements
 
 function dragMoveListener (event) {
   var target = event.target,
@@ -555,7 +677,7 @@ function dragMoveListener (event) {
   target.setAttribute('data-y', y);
 };
 
-	// create a restrict modifier to prevent dragging an element out of its parent
+// create a restrict modifier to prevent dragging an element out of its parent
 const restrictToParent = [
 							interact.modifiers.restrictRect({
 								restriction: 'parent'
@@ -564,14 +686,14 @@ const restrictToParent = [
 
 var playerOnField = interact('.fieldPlayer');
 
-	//drag fieldPlayer class
+//drag fieldPlayer class
 playerOnField.draggable({
 	onmove: dragMoveListener,
 	modifiers: restrictToParent
 });
 
-	/*Double click on field player
-	//On double click for class = fieldPlayer display availablePlayersBox in a modal/pop up window*/
+/*Double click on field player
+//On double click for class = fieldPlayer display availablePlayersBox in a modal/pop up window*/
 playerOnField.on('doubletap',doubleTapAction);
 
 function doubleTapAction(event) {
@@ -621,7 +743,7 @@ function playerToReplaceInfo(elementIDPTR){
 
 		for(var i = valuesToTest.length - 1; i>=0 ; i--){
 			if(valuesToTest[i].recordId==rosterIDJSON){
-				console.log(valuesToTest[i].recordId);
+				// console.log(valuesToTest[i].recordId);
 				playerToReplaceFN = valuesToTest[i].firstName;
 			};
 		};
@@ -630,6 +752,7 @@ function playerToReplaceInfo(elementIDPTR){
 	
 		$("#pReplaceElementN").text(playerToReplaceFN);
 
+		$("#pReplaceElementJ").css('background-image',$("#"+elementIDPTR).css('background-image'));
 
 	};
 };
@@ -641,8 +764,7 @@ $("#availablePlayersModal").on("hide.bs.modal", function () {
 });
 
 
-
-	//Available Players Table
+//Available Players Table
 //load the pop-up availablePlayersBox as a DataTable and declare as variablel to use again
 var availablePlayersTable = $('#loadOnFieldPlayers').DataTable({
 		"dom"			: 'frtip',
@@ -743,7 +865,6 @@ function loadGameSheetList(gameSheetListArray){
 	
 };
 
-
 var gameSheetElement = document.getElementById('gameSheet');
 
 gameSheetElement.onchange = function updateGameSheet(){
@@ -785,9 +906,6 @@ loadGameSheetToSave(dataToSendGameSheetOnSave);
 							
 });
 
-
-
-
 $('#loadGameSheetButton').click(function(){
 	
 	var sheetIDToLoad = document.getElementById('loadingLoadGameSheetList').value
@@ -819,8 +937,6 @@ $('#loadGameSheetButton').click(function(){
 			alert("Sheet Loaded");
 		})
 });
-
-
 
 function loadGameSheetToSave(dataToSendGameSheetOnSave){
 
@@ -898,84 +1014,3 @@ function loadGameSheetToSave(dataToSendGameSheetOnSave){
 			
 		});
 };
-
-
-$('#editTeamDetails').click(function(){
-     
-    if($(this).prop('checked') == false){
-		document.getElementById("teamName").disabled = true;
-		document.getElementById("colorOne").disabled = true;
-		document.getElementById("colorTwo").disabled = true;
-		$("#saveTeamDetailsButtonDiv").hide();
-		document.getElementById("saveTeamDetailsButton").disabled = true;
-		
-    }
-    else {
-		document.getElementById("teamName").disabled = false;
-		document.getElementById("colorOne").disabled = false;
-		document.getElementById("colorTwo").disabled = false;		
-		$("#saveTeamDetailsButtonDiv").show();
-		document.getElementById("saveTeamDetailsButton").disabled = false; }
-});
-
-
-$('#saveTeamDetailsButton').click(function(){
-
-//Get sheet name from input box to save new sheet 
-var teamNameChange = document.getElementById('teamName').value,
-	colorOneChange = document.getElementById('colorOne').value,
-	colorTwoChange = document.getElementById('colorTwo').value;
-
-	applyTeamColors(colorOneChange,colorTwoChange);
-
-//include alert to send to confirm update
-	var confirmTeamDetailsUpdate = confirm("Update "+ teamNameChange + " details?");
-
-	if (confirmTeamDetailsUpdate == true) {
-
-		//proceed to update record
-		
-		dataToSendTeamDetailsOnSave = {	
-							'teamID': parseInt(teamID),
-							'teamName': teamNameChange,
-							'colorOne': colorOneChange,
-							'colorTwo': colorTwoChange
-							};
-							
-		JSONToSendTeamDetailsOnSave	= JSON.stringify(dataToSendTeamDetailsOnSave);				
-		
-		//load array into ajax call to send to database
-	$.ajax({
-		type: 'POST',
-		url: '../myTeams.php?saveTeamDetails',
-		data: {'updatedTeamDetails': JSONToSendTeamDetailsOnSave},
-		error: function(xhr, textStatus, error) {
-				console.log(xhr.responseText);
-				console.log(xhr.statusText);
-				console.log(textStatus);
-				console.log(error);
-				}
-		}).done( function (data){
-			// console.log(data);
-			$('#editTeamDetails').prop('checked',false);
-			document.getElementById("teamName").disabled = true;
-			document.getElementById("colorOne").disabled = true;
-			document.getElementById("colorTwo").disabled = true;
-			$("#saveTeamDetailsButtonDiv").hide();
-			document.getElementById("saveTeamDetailsButton").disabled = true;
-			alert("Team Details Saved");
-			
-		});
-		
-	} else {;};
-							
-});
-
-
-$(function enablePopovers() {
-	$('[data-toggle="popover"]').popover({
-		html: true
-	});
-  })
-
-});

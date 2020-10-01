@@ -41,8 +41,8 @@ foreach($output as $key => $value){
 			$sqlLoad = "SELECT t.teamName,t.teamID
 					FROM teamInfo as t
 					INNER JOIN accessmap as am
-					WHERE am.userID	=  '$usernameView'
-					AND t.teamID = am.teamID
+					WHERE t.teamID = am.teamID
+					AND am.userID	=  '$usernameView'
 					ORDER BY t.teamID ";
 
 			$result = mysqli_query($connection, $sqlLoad);
@@ -81,6 +81,20 @@ foreach($output as $key => $value){
 					return true;
 				};
 			};
+		break;
+		case "deleteTeam":
+			$teamIDToDelete =$output['deleteTeam'];
+
+			$deleteTeamSQL = "DELETE FROM `teaminfo` WHERE teamID='$teamIDToDelete';DELETE FROM `accessmap` WHERE teamID='$teamIDToDelete'";
+
+			$resultDeleteTeam = mysqli_multi_query($connection, $deleteTeamSQL);
+			
+			if (!$resultDeleteTeam){
+				echo("Error description: " . mysqli_error($connection));
+			} else {
+				return true;
+			};
+
 		break;
 		case "teamViewData":
 			//team ID details
@@ -156,110 +170,6 @@ foreach($output as $key => $value){
 										
 					echo json_encode($dataPackage);	
 			};
-		break;
-		case "saveGameSheet":
-
-			$dataFromSaveCall = json_decode($_POST['rowsToAdd'],true);
-			$rowsToAddToTable = $dataFromSaveCall['positionInfo'];
-			$sheetID = $dataFromSaveCall["gameSheet"]["sheetID"];
-			$teamID = $dataFromSaveCall['gameSheet']['teamID'];
-			$setAsDefault = 0;
-			$numPlyrsToSave= $dataFromSaveCall['gameSheet']['numPlyrsToSave'];
-		
-			if(isset($dataFromSaveCall['setAsDefault'])){		
-				//remove current default 
-				$removeAnyDefaultsSetForTeam = "UPDATE gameSheets SET `isDefault` = 0 WHERE `teamID` = '$teamID';";
-		
-				$resetDefaults = mysqli_query($connection, $removeAnyDefaultsSetForTeam);
-			
-				if (!$resetDefaults) {
-					echo("Error description: " . mysqli_error($connection));
-				} else {
-					//update new default
-					$setAsDefault=1;
-				}
-			};
-
-			//New Game Sheet
-			if($sheetID == 0){
-				$sheetName = $dataFromSaveCall['gameSheet']['sheetName'];
-				$sheetIDGameSheet = "";					
-				$addRowsToGameSheetSQL = "INSERT INTO gameSheets (`gameSheetName`,`teamID`,`isDefault`,`numOfPlyrsOnFld`) VALUES ('$sheetName', '$teamID', '$setAsDefault', '$numPlyrsToSave');";
-				
-				$resultGameSheet = mysqli_query($connection, $addRowsToGameSheetSQL);
-					if (!$resultGameSheet){
-						echo("Error description: " . mysqli_error($connection));
-					} else {
-						$sheetIDGameSheet = mysqli_insert_id($connection);	
-					};
-		
-				$addRowsToPositionInfoSQL = "INSERT INTO positionInfo (`sheetID`, `recordIDfromRoster`, `htmlID`, `htmlLeft`, `htmlTop` ) VALUES";
-				$valuesInsert = [];
-		
-				foreach($rowsToAddToTable as $rowToAdd){
-					
-					$rosterIDGameSheet = $rowToAdd['rosterID'];
-					$htmlIDGameSheet = $rowToAdd['htmlID'];
-					$leftPosGameSheet = $rowToAdd['leftPos'];
-					$topPosGameSheet = $rowToAdd['topPos'];
-					
-					$valuesInsert[] = "('$sheetIDGameSheet','$rosterIDGameSheet','$htmlIDGameSheet','$leftPosGameSheet','$topPosGameSheet')";
-				};
-		
-				$addRowsToPositionInfoSQL .= join(',', $valuesInsert) . ';';
-		
-				$resultNewSheet = mysqli_query($connection, $addRowsToPositionInfoSQL);
-		
-				if (!$resultNewSheet)
-				{
-					echo("Error description: " . mysqli_error($connection));
-				} else {
-					while (mysqli_next_result($connection)) {;} // flush multi_queries
-				}
-				
-			} else { //update existing gamesheet
-					
-				$updateRowsToPositionInfoSQL = "UPDATE gameSheets SET `numOfPlyrsOnFld`='$numPlyrsToSave', `isDefault`='$setAsDefault' WHERE `gameSheetID`='$sheetID';";
-				$valuesInsert = [];
-		
-				foreach($rowsToAddToTable as $rowToAdd){
-					
-					$rosterIDGameSheet = $rowToAdd['rosterID'];
-					$htmlIDGameSheet = $rowToAdd['htmlID'];
-					$leftPosGameSheet = $rowToAdd['leftPos'];
-					$topPosGameSheet = $rowToAdd['topPos'];
-					
-					$valuesInsert[] = "UPDATE positionInfo SET `recordIDfromRoster`='$rosterIDGameSheet', `htmlLeft`='$leftPosGameSheet', `htmlTop`='$topPosGameSheet' WHERE `htmlID`= '$htmlIDGameSheet' AND `sheetID`='$sheetID'";
-				};
-		
-				$updateRowsToPositionInfoSQL .= join(';', $valuesInsert) . ';';
-		
-				$resultUpdateSheet = mysqli_multi_query($connection, $updateRowsToPositionInfoSQL);
-		
-				if (!$resultUpdateSheet) {
-					echo("Error description: " . mysqli_error($connection));
-				} else {
-					while (mysqli_next_result($connection)) {;} // flush multi_queries
-				}
-			};
-				
-			//return save/load gamesheetlist
-			$gameSheetRowSQL = "SELECT g.gameSheetID, g.gameSheetName FROM gameSheets AS g WHERE `teamID`='$teamID' ORDER BY `gameSheetID` DESC LIMIT 1;";
-								
-			$gameSheetRowSQLResult = mysqli_query($connection, $gameSheetRowSQL);
-			
-			if (!$gameSheetRowSQLResult)
-			{
-				echo ("Error description: " . mysqli_error($connection));
-			} else {
-			
-			for ($gameSheetList=array(); 
-				$rowgSL = mysqli_fetch_assoc($gameSheetRowSQLResult); 
-				$gameSheetList[] = $rowgSL);
-			
-			echo json_encode($gameSheetList);	
-			};
-
 		break;
 		case "saveTeamDetails":
 		
@@ -412,7 +322,112 @@ foreach($output as $key => $value){
 				
 				echo json_encode($gameSheetPackage);	
 			};	
-		break;	
+		break;
+		case "saveGameSheet":
+
+			$dataFromSaveCall = json_decode($_POST['rowsToAdd'],true);
+			$rowsToAddToTable = $dataFromSaveCall['positionInfo'];
+			$sheetID = $dataFromSaveCall["gameSheet"]["sheetID"];
+			$teamID = $dataFromSaveCall['gameSheet']['teamID'];
+			$setAsDefault = 0;
+			$numPlyrsToSave= $dataFromSaveCall['gameSheet']['numPlyrsToSave'];
+		
+			if(isset($dataFromSaveCall['setAsDefault'])){		
+				//remove current default 
+				$removeAnyDefaultsSetForTeam = "UPDATE gameSheets SET `isDefault` = 0 WHERE `teamID` = '$teamID';";
+		
+				$resetDefaults = mysqli_query($connection, $removeAnyDefaultsSetForTeam);
+			
+				if (!$resetDefaults) {
+					echo("Error description: " . mysqli_error($connection));
+				} else {
+					//update new default
+					$setAsDefault=1;
+				}
+			};
+
+			//New Game Sheet
+			if($sheetID == 0){
+				$sheetName = $dataFromSaveCall['gameSheet']['sheetName'];
+				$sheetIDGameSheet = "";					
+				$addRowsToGameSheetSQL = "INSERT INTO gameSheets (`gameSheetName`,`teamID`,`isDefault`,`numOfPlyrsOnFld`) VALUES ('$sheetName', '$teamID', '$setAsDefault', '$numPlyrsToSave');";
+				
+				$resultGameSheet = mysqli_query($connection, $addRowsToGameSheetSQL);
+					if (!$resultGameSheet){
+						echo("Error description: " . mysqli_error($connection));
+					} else {
+						$sheetIDGameSheet = mysqli_insert_id($connection);	
+					};
+		
+				$addRowsToPositionInfoSQL = "INSERT INTO positionInfo (`sheetID`, `recordIDfromRoster`, `htmlID`, `htmlLeft`, `htmlTop` ) VALUES";
+				$valuesInsert = [];
+		
+				foreach($rowsToAddToTable as $rowToAdd){
+					
+					$rosterIDGameSheet = $rowToAdd['rosterID'];
+					$htmlIDGameSheet = $rowToAdd['htmlID'];
+					$leftPosGameSheet = $rowToAdd['leftPos'];
+					$topPosGameSheet = $rowToAdd['topPos'];
+					
+					$valuesInsert[] = "('$sheetIDGameSheet','$rosterIDGameSheet','$htmlIDGameSheet','$leftPosGameSheet','$topPosGameSheet')";
+				};
+		
+				$addRowsToPositionInfoSQL .= join(',', $valuesInsert) . ';';
+		
+				$resultNewSheet = mysqli_query($connection, $addRowsToPositionInfoSQL);
+		
+				if (!$resultNewSheet)
+				{
+					echo("Error description: " . mysqli_error($connection));
+				} else {
+					while (mysqli_next_result($connection)) {;} // flush multi_queries
+				}
+				
+			} else { //update existing gamesheet
+					
+				$updateRowsToPositionInfoSQL = "UPDATE gameSheets SET `numOfPlyrsOnFld`='$numPlyrsToSave', `isDefault`='$setAsDefault' WHERE `gameSheetID`='$sheetID';";
+				$valuesInsert = [];
+		
+				foreach($rowsToAddToTable as $rowToAdd){
+					
+					$rosterIDGameSheet = $rowToAdd['rosterID'];
+					$htmlIDGameSheet = $rowToAdd['htmlID'];
+					$leftPosGameSheet = $rowToAdd['leftPos'];
+					$topPosGameSheet = $rowToAdd['topPos'];
+					
+					$valuesInsert[] = "UPDATE positionInfo SET `recordIDfromRoster`='$rosterIDGameSheet', `htmlLeft`='$leftPosGameSheet', `htmlTop`='$topPosGameSheet' WHERE `htmlID`= '$htmlIDGameSheet' AND `sheetID`='$sheetID'";
+				};
+		
+				$updateRowsToPositionInfoSQL .= join(';', $valuesInsert) . ';';
+		
+				$resultUpdateSheet = mysqli_multi_query($connection, $updateRowsToPositionInfoSQL);
+		
+				if (!$resultUpdateSheet) {
+					echo("Error description: " . mysqli_error($connection));
+				} else {
+					while (mysqli_next_result($connection)) {;} // flush multi_queries
+				}
+			};
+				
+			//return save/load gamesheetlist
+			$gameSheetRowSQL = "SELECT g.gameSheetID, g.gameSheetName FROM gameSheets AS g WHERE `teamID`='$teamID' ORDER BY `gameSheetID` DESC LIMIT 1;";
+								
+			$gameSheetRowSQLResult = mysqli_query($connection, $gameSheetRowSQL);
+			
+			if (!$gameSheetRowSQLResult)
+			{
+				echo ("Error description: " . mysqli_error($connection));
+			} else {
+			
+			for ($gameSheetList=array(); 
+				$rowgSL = mysqli_fetch_assoc($gameSheetRowSQLResult); 
+				$gameSheetList[] = $rowgSL);
+			
+			echo json_encode($gameSheetList);	
+			};
+
+		break;
+			
 	}
 };
 

@@ -1,7 +1,8 @@
 <?php
 echo '
 <!-- Vertical bar with logo on left and hamburger menu on right-->
-	<nav class="navbar  .navbar-center">
+	<nav class="navbar  navbar-center navbar-fixed-top">
+	<div id="navBarContainer" class="container">	
 		<div id="logoContainer" class="navbar-brand">
 			<img src="img/soccerBall.jpg" class="navbrand_img">
 			<div class="logoCenter"><a id="logoText" href="index.php">&#161;JUEGA!</a></div>
@@ -10,7 +11,7 @@ echo '
 		<button class="navbar-light navbar-toggler" type="button" data-toggle="collapse" data-target="#juegaNav" aria-controls="juegaNav" aria-expanded="true" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
-	</nav>  
+	</div>
 
 	<div class="collapse navbar-collapse" id="juegaNav">
 		<div class="navbar-nav" style="text-responsive">
@@ -21,6 +22,7 @@ echo '
 			<a id="qsLogoutBtn" href="logout.php">Logout</a>									
 		</div>
 	</div>
+	</nav> 
 	
 	<div class="modal fade" id="modalSelectTeam" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">	  
 		<div class="modal-dialog" role="document">

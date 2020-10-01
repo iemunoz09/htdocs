@@ -33,16 +33,21 @@ if (!$userInfo) {
 				</button>
 			  </h2>
 			</div>
-			<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionView">
-			  <div class="card-body">
+			<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionView">
+			  <div id="teamDetailsContainer" class="card-body">
 				 <!-- Team Properties available here;  allow update/delete(deactivate) teams -->
-				<form class="form-playerInfo" id="teamInfoForm" name="teamInfoForm" method="post" >
+				<form class="form-Design" id="teamInfoForm" name="teamInfoForm" method="post" >
 
-					<div class="editTeamDetailsToggle">		
-						<label class="editTeamDetailsLabel" for="editTeamDetails">Edit?
-							<input id="editTeamDetails" type="checkbox" class="editTeamDetailsInput" value="editTD" title="Edit Team Details">
+				<div class="row cardSubHeader">
+					<button id="deleteTeam" type="button" class="btn btn-danger" style="visibility:hidden">Delete</button>
+											
+					<div id="editTeamDetailsToggle">
+						<label class="editTeamDetailsLabel switch" for="editTeamDetails">
+							<input id="editTeamDetails" type="checkbox" value="editTD" title="Edit Team Details">
+							<span class="slider round"></span>
 						</label><br>
 					</div>
+				</div>
 			
 					<h5 id="teamInfoFormTitle">Team Details</h5>
 					 
@@ -93,18 +98,18 @@ if (!$userInfo) {
 				<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionView">
 					<div id="rosterTableContainer" class="card-body">
 						<!-- Include appForm here -->
-						<div style="margin: 0 auto;">
-							<div id="helpButtonFieldDiv" class="row marginLeftRightIsZero">
-								<button id ="rosterHints" class="btn btn-light" type="button" data-toggle="popover" data-trigger="focus" style="margin: 0 0 0 auto" title="Roster Actions" data-content="Add a new user<br>Edit existing users by clicking on the row<br>Delete users from the edit menu.">?</button>
+						<div class="cardSubHeader">
+							<div id="helpButtonRosterDiv" class="row">
+								<button id ="rosterHints" class="btn btn-light hints" type="button" data-toggle="popover" data-trigger="focus" title="Roster Actions" data-content="Add a new user<br>Edit existing users by clicking on the row<br>Delete users from the edit menu.">?</button>
 							</div>
-							<div id="rosterButtons" class="row marginLeftRightIsZero">
+							<div id="rosterButtons" class="row">
 								<button id="addPlayerButton" type="button" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#appFormModal"><b>Add Player</b></button>
 								<button id="sendMessageModalButton" type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#sendMessageModal"><b>Message</b></button>
 							</div>
 						</div>
 
 						<div id="tableContainer" class="align-content-center" >
-							<div class="loadPlayersDiv" label="Roster">	
+							<div id="loadPlayersDiv" label="Roster">	
 								<table id="loadPlayers" class="display nowrap">
 									<thead>
 										<tr>
@@ -135,7 +140,7 @@ if (!$userInfo) {
 						<div id="appFormModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 							<div class="modal-dialog" role="document">
 								<div class="modal-content">		
-									<form class="form-playerInfo" id="pForm" name="pForm" method="post" data-formType data-recordID="0" >			
+									<form class="form-Design" id="pForm" name="pForm" method="post" data-formType data-recordID="0" >			
 										<div id="appFormHeader" class="modal-header text-center">
 											<button id="deleteUserFromRoster" type="button" class="btn btn-danger" style="display:none">Delete</button>
 											<h4 id="playerFormTitle" class="modal-title w-100 font-weight-bold">Add New Player</h4>
@@ -199,7 +204,7 @@ if (!$userInfo) {
 												</div>
 												<div id="optionalFormInput" class="my-3 tab">				
 													<div class="" id="optDiv">
-															<div class="form-label-group mt-4">
+															<div class="form-label-group">
 																<label for="nickName">Nickname</label>
 																<input type="name" id="nickName" name="nickName" class="form-control" placeholder="Nickname">
 															</div>
@@ -209,12 +214,12 @@ if (!$userInfo) {
 																<input type="tel" id="altPhoneNum" name="altPhNum" class="form-control" placeholder="Alternate Phone Number">
 															</div>	
 													
-															<div class="form-label-group">
-																<div>
+															<div class="form-group">
+																<div class="form-group">
 																	<label for="jerseyNumber">Jersey Number</label>
 																	<input type="number" id="jerseyNumber" name="jerseyNumber" class="form-control form-sm" placeholder="##" maxlength="2">
 																</div>
-																<div>
+																<div class="form-group">
 																	<label for="uniformSize">Uniform Size</label>
 																	<input type="text" id="uniformSize" name="uniformSize" class="form-control form-sm" placeholder="Size" maxlength="3" >
 																</div>
@@ -291,7 +296,7 @@ if (!$userInfo) {
 						<div id="sendMessageModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 							<div class="modal-dialog" role="document">
 								<div class="modal-content">		
-									<form class="form-playerInfo" id="sendMessageForm" name="sendMessageForm" method="post" data-formType data-recordID="0" >			
+									<form class="form-Design" id="sendMessageForm" name="sendMessageForm" method="post" data-formType data-recordID="0" >			
 										<div id="sendMessageHeader" class="modal-header text-center">
 											<h4 id="messageModalTitle" class="modal-title w-100 font-weight-bold">Message Team</h4>
 											<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -303,7 +308,7 @@ if (!$userInfo) {
 											<div id="messageFormContainer" class="align-content-center formStyle md-form mb-5">	
 												<p>Send a message to the team based on the preferred communication and language.</p>
 												<h4 class="sendToLabel">Send To:</h4>
-												<div class="form-label-group messageCriteria">
+												<div class="form-label-group">
 													<select class="form-control" id="prefCommMessage" name="prefCommMessage">
 														<option value=" " selected disabled>Select Preference</option>
 														<option value="text">Text</option>
@@ -349,16 +354,18 @@ if (!$userInfo) {
 			<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionView">
 				<div id="appInterfaceContainer" class="card-body">
 					<!-- Include appInterface here -->
-					<div id="helpButtonRosterDiv" class="row marginLeftRightIsZero">
-						<button id ="rosterHints" class="btn btn-light" type="button" data-toggle="popover" data-trigger="focus" style="margin: 0 0 0 auto" title="Field Player Actions" data-content="Drag the field players to move positins.<br>Double-tap field player to switch with an available player<br>">?</button>
-					</div>
-					<div id="numOfPlayersContainer" class="">
-						<label for="numOfPlayers"><h5>Players on field?</h5></label>
-						<select class="form-control form-sm" id="numOfPlayers" name="numOfPlayers" required>
-							<option value=11 selected>11</option>
-							<option value=10>10</option>
-							<option value=9>9</option>
-						</select>
+					<div class="cardSubHeader">
+						<div id="helpButtonFieldDiv" class="row">
+							<button id ="fieldHints" class="btn btn-light hints" type="button" data-toggle="popover" data-trigger="focus" title="Field Player Actions" data-content="Drag the field players to move positins.<br>Double-tap field player to switch with an available player<br>">?</button>
+						</div>
+						<div id="numOfPlayersContainer">
+							<label for="numOfPlayers"><h5>Players on field?</h5></label>
+							<select class="form-control form-sm" id="numOfPlayers" name="numOfPlayers" required>
+								<option value=11 selected>11</option>
+								<option value=10>10</option>
+								<option value=9>9</option>
+							</select>
+						</div>
 					</div>
 					
 					<div id="gameSheetControls" class="btn-toolbar justify-content-between">
@@ -366,7 +373,7 @@ if (!$userInfo) {
 						<button id="loadGameSheetListButton" type="button" class="btn btn-info" title="Load Sheet" data-toggle="modal" data-target="#loadGameSheetModal" >Load</button>
 					</div>
 					
-					<div id="field" class="field col-xs-12"> 		
+					<div id="field" class="field "> 		
 						<div class="grid-container">
 						<div id="fieldPlayer1" class="fieldPlayer fpCSS rounded-circle" data-idJersey="">#</div>
 						<div id="fieldPlayer2" class="fieldPlayer fpCSS rounded-circle" data-idJersey="">#</div>  
@@ -387,8 +394,8 @@ if (!$userInfo) {
 							<div id="availablePlayersInnerBox" data-idposition="" class="modal-content" label="Available Players" >		
 								<br><h5>Player To Replace:</h5>
 								<div id="playerToReplaceInfo" class="row" >
-									<div id="pReplaceElementJ" class="infoBox rounded-circle" style="width: 40px; height: 40px">X</div>
-									<div id="pReplaceElementN" class="infoBox">Y</div>
+									<div id="pReplaceElementJ" class="playerToReplaceInfoBox rounded-circle" style="width: 40px; height: 40px">X</div>
+									<div id="pReplaceElementN" class="playerToReplaceInfoBox">Y</div>
 								</div>
 								<br>
 								<div>
@@ -471,6 +478,12 @@ if (!$userInfo) {
 								
 								<div class="modal-body mx-3">	
 									<form class="" id="loadSheetForm" name="loadSheetForm" method="">
+									<div class="deleteGameSheetButtonDiv">
+										<label id="loadDeleteGameSheetLabel switch" for="deleteGameSheetOptionsToggle">
+											<input id="deleteGameSheetOptionsToggle" type="checkbox" value="deletGS" title="Delete Game Sheet">
+											<span class="slider round"></span>
+										</label><br>
+									</div>
 										<label for="loadingLoadGameSheetList">Load Sheet:</label>
 										<div>
 											<select id="loadingLoadGameSheetList" size="6">

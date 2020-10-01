@@ -19,7 +19,7 @@
 	
 	<body>
 	
-		<div class="containerStyle">
+		<div id="indexContainer">
 			<h1>&#161;JUEGA!</h1>
 			<h2>GameTime</h2>
 		</div>
@@ -31,9 +31,9 @@
     
 	<?php	} else { ?>
 
-    // User is authenticated
+<!--     // User is authenticated
     // See below for how to display user information
-	// redirect to welcome.php 
+	// redirect to welcome.php  -->
 	<meta http-equiv="Refresh" content="0; url='welcome.php'" />
 	<a id="qsLogoutBtn" class="btn btn-warning btn-logout" href="components/logout.php">Logout</a>
 
